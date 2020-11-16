@@ -20,4 +20,7 @@ class CommentAdmin(admin.ModelAdmin):
     list_display =(
         'id', 
         'content',
+        'writer',
+        'created_at',
+        'deleted',
     )

@@ -1,0 +1,36 @@
+<li class="list-group-item" id="comment-{{ comment.pk }}">
+    <p>
+        <b>{{ comment.writer.username }}</b>
+        {% if user == comment.writer %}
+            <a href="#" class="right comment-delete-button" id="comment-delete-{{ comment.pk }}" data-comment-id="{{ comment.pk }}">삭제</a>
+        {% endif %}
+    </p>
+    <p>{{ comment.content }}</p>
+</li>
+
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script>
+    $('.comment-delete-button').click(function(){
+        const commentId = $(this).data('comment-id');
+        const deleteMessage = $(`#comment-delete-${commentId}`).val();
+        console.log(deleteMessage)
+        var delete_warning = confirm('댓글을 삭제하시겠습니까?');
+        if (delete_warning == true) {
+            $.ajax({
+                url : "{% url 'items:delete_comment' comment.pk %}",
+                type : "POST",
+                data : {
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    'content': deleteMessage
+                },
+                success: function(response) {
+                    $(`#comment-delete-${commentId}`).replaceWith('<span style="color:gray;">삭제된 댓글입니다.</span><hr>');
+                },
+                error: function(){
+                    alert('본인 댓글이 아닙니다.');
+                },
+
+            });
+        }
+    });
+</script>
